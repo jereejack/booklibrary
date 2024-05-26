@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Library</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="app" x-data="libraryApp()">
+    <h1>Book Library</h1>
+    <div x-show="!loggedIn">
+      <h2>Login</h2>
+      <input type="text" placeholder="Username" x-model="username">
+      <input type="password" placeholder="Password" x-model="password">
+      <button @click="login">Login</button>
+    </div>
+    <div x-show="loggedIn">
+      <h2>Manage Books</h2>
+      <button @click="logout">Logout</button>
+      <h3>Add Book</h3>
+      <input type="text" placeholder="Title" x-model="newBook.title">
+      <input type="text" placeholder="Author" x-model="newBook.author">
+      <input type="text" placeholder="Genre" x-model="newBook.genre">
+      <button @click="addBook">Add Book</button>
+      <h3>Book List</h3>
+      <ul>
+        <li x-for="book in books" :key="book.id">
+          {{ book.title }} by {{ book.author }} ({{ book.genre }})
+          <button @click="deleteBook(book.id)">Delete</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs" defer></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
