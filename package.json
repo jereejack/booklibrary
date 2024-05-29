@@ -10,13 +10,26 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "core-js": "^3.37.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.11.5"
+    "pg": "^8.11.5",
+    "pg-pool": "^3.6.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.1"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.1",
+    "supertest": "^7.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jereejack/booklibrary.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jereejack/booklibrary/issues"
+  },
+  "homepage": "https://github.com/jereejack/booklibrary#readme",
   "description": ""
 }
