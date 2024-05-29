@@ -1,0 +1,153 @@
+/* body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  h1 {
+    color: #333;
+    text-align: center;
+  }
+  
+  h2 {
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  input, select {
+    margin-bottom: 10px;
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logout-btn {
+    background-color: #dc3545;
+  }
+  
+  .logout-btn:hover {
+    background-color: #c82333;
+  }
+  
+  .book-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .book-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .delete-btn {
+    background-color: #dc3545;
+  }
+  
+  .delete-btn:hover {
+    background-color: #c82333;
+  }
+  
+  .add-book-form {
+    margin-top: 20px;
+  }
+  
+  .form-container {
+    margin-bottom: 30px;
+  }
+  
+  .login-register {
+    display: flex;
+    justify-content: space-around;
+  }
+   */
+
+
+
+   body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    width: 100%;
+    text-align: center;
+    padding: 1em 0;
+}
+
+main {
+    max-width: 600px;
+    width: 100%;
+    padding: 1em;
+}
+
+section {
+    margin-bottom: 2em;
+}
+
+input, button {
+    display: block;
+    width: 100%;
+    margin-bottom: 1em;
+    padding: 0.5em;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 0.5em;
+    border: 1px solid #ddd;
+    margin-bottom: 0.5em;
+}
