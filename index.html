@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Library Catalog</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="app.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Book Library Catalog</h1>
+    </header>
+    <main>
+      <section id="manage" style="display: none;">
+        <h2>Manage Books</h2>
+        <input type="text" id="bookTitle" placeholder="Title">
+        <input type="text" id="bookAuthor" placeholder="Author">
+        <input type="text" id="bookGenre" placeholder="Genre">
+        <button id="addBookButton">Add Book</button>
+        <ul id="manageBookList"></ul>
+    </section>
+    <section id="login">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button id="loginButton">Login</button>
+    </section>
+    <section id="browse">
+        <h2>Browse Books</h2>
+         <input type="text" id="searchTitle" placeholder="Search by title">
+         <input type="text" id="searchAuthor" placeholder="Search by author">            <input type="text" id="searchGenre" placeholder="Search by genre">
+         <button id="searchButton">Search</button>
+         <button id="showBooksButton">Show Books</button>
+         <ul id="bookList"></ul>
+     </section>
+    </main>
+</body>
+</html>
