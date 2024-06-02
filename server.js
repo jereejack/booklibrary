@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 const cors = require('cors');
-// const url = require('url');
+
 
 dotenv.config();
 
@@ -27,9 +27,6 @@ app.use(express.static('public'));
 
 
 
-// app.get("/index", (req, res) => {
-//   res.sendFile(_dirname + "/frontend/index.html");
-// });
 
 
 app.post('/register', async (req, res) => {
@@ -48,10 +45,6 @@ app.post('/register', async (req, res) => {
   });
 
 
-// app.get('/users', async (req, res) => {
-//     const result = await pool.query('SELECT * FROM users');
-//     res.json(result.rows);
-// });
 
 
 
@@ -125,6 +118,7 @@ app.post('/books', authenticateJWT, async (req, res) => {
 // Update a book
 app.patch('/books/:id', authenticateJWT, async (req, res) => {
     if (req.user.role !== 'librarian') return res.sendStatus(403);
+
     const { id } = req.params;
     const { title, author, genre } = req.body;
     try {
@@ -137,8 +131,8 @@ app.patch('/books/:id', authenticateJWT, async (req, res) => {
       }
       res.json(result.rows[0]);
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Error updating book' });
+      console.error('Error updating book', err);
+      res.status(500).json({ message: 'Error updating book', error: err.message});
     }
   });
 
@@ -158,6 +152,8 @@ app.delete('/books/:id', authenticateJWT, async (req, res) => {
   });
 
 
+  
+
 // Get all books or search books
 app.get('/books', async (req, res) => {
     const { search } = req.query;
@@ -175,6 +171,7 @@ app.get('/books', async (req, res) => {
     }
   });
 
+  
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
