@@ -1,93 +1,143 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('token');
-  const loginSection = document.getElementById('login');
-  const manageSection = document.getElementById('manage');
-  const browseSection = document.getElementById('browse');
+    const apiUrl = 'http://localhost:3000';
+    const tokenKey = 'authToken';
 
-  if (token) {
-      loginSection.style.display = 'none';
-      manageSection.style.display = 'block';
-      loadBooks();
-  } else {
-      loginSection.style.display = 'block';
-      manageSection.style.display = 'none';
-  }
+    const registerForm = document.getElementById('register-form');
+    const loginForm = document.getElementById('login-form');
+    const addBookForm = document.getElementById('add-book-form');
+    
+    // Event Listener for Registration Form
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const role = document.getElementById('register-role').value;
+            try {
+                await axios.post(`${apiUrl}/register`, { username, password, role });
+                alert('Registration successful!');
+            } catch (err) {
+                console.error(err);
+                alert('Registration failed.');
+            }
+        });
+    }
 
-  document.getElementById('loginButton').addEventListener('click', async () => {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const res = await fetch('http://localhost:3000/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-      });
-      const data = await res.json();
-      if (res.status === 200) {
-          localStorage.setItem('token', data.token);
-          loginSection.style.display = 'none';
-          manageSection.style.display = 'block';
-          loadBooks();
-      } else {
-          alert(data.message);
-      }
-  });
+    // Event Listener for Login Form
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                const response = await axios.post(`${apiUrl}/login`, { username, password });
+                localStorage.setItem(tokenKey, response.data.token);
+                window.location.href = 'books.html';
+            } catch (err) {
+                console.error(err);
+                alert('Login failed.');
+            }
+        });
+    }
 
-  document.getElementById('searchButton').addEventListener('click', async () => {
-      const title = document.getElementById('searchTitle').value;
-      const author = document.getElementById('searchAuthor').value;
-      const genre = document.getElementById('searchGenre').value;
-      const res = await fetch(`http://localhost:3000/books?title=${title}&author=${author}&genre=${genre}`);
-      const books = await res.json();
-      const bookList = document.getElementById('bookList');
-      bookList.innerHTML = '';
-      books.forEach(book => {
-          const li = document.createElement('li');
-          li.textContent = `${book.title} by ${book.author} (Genre: ${book.genre})`;
-          bookList.appendChild(li);
-      });
-  });
+    // Function to Fetch and Display Books
+    async function fetchBooks() {
+        try {
+            const response = await axios.get(`${apiUrl}/books`);
+            const books = response.data;
+            const booksList = document.getElementById('books-list');
+            booksList.innerHTML = books.map(book => `
+                <div class="book-item">
+                    <h3>${book.title}</h3>
+                    <p>Author: ${book.author}</p>
+                    <p>Genre: ${book.genre}</p>
+                    ${window.location.pathname.endsWith('books.html') ? `
+                    <button onclick="deleteBook(${book.id})">Delete</button>
+                    <button onclick="editBook(${book.id})">Edit</button>
+                    ` : ''}
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error(err);
+            alert('Failed to fetch books.');
+        }
+    }
 
-  document.getElementById('showBooksButton').addEventListener('click', async () => {
-      const res = await fetch('http://localhost:3000/books');
-      const books = await res.json();
-      const bookList = document.getElementById('bookList');
-      bookList.innerHTML = '';
-      books.forEach(book => {
-          const li = document.createElement('li');
-          li.textContent = `${book.title} by ${book.author} (Genre: ${book.genre})`;
-          bookList.appendChild(li);
-      });
-  });
+    // Function to Add a New Book
+    async function addBook(title, author, genre) {
+        const token = localStorage.getItem(tokenKey);
+        try {
+            await axios.post(`${apiUrl}/books`, { title, author, genre }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            fetchBooks();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to add book.');
+        }
+    }
 
-  document.getElementById('addBookButton').addEventListener('click', async () => {
-      const title = document.getElementById('bookTitle').value;
-      const author = document.getElementById('bookAuthor').value;
-      const genre = document.getElementById('bookGenre').value;
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/books', {
-          method: 'POST',
-          headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': token
-          },
-          body: JSON.stringify({ title, author, genre })
-      });
-      if (res.status === 200) {
-          loadBooks();
-      } else {
-          alert('Error adding book');
-      }
-  });
+    // Event Listener for Add Book Form
+    if (addBookForm) {
+        addBookForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('book-title').value;
+            const author = document.getElementById('book-author').value;
+            const genre = document.getElementById('book-genre').value;
+            await addBook(title, author, genre);
+        });
+    }
 
-  async function loadBooks() {
-      const res = await fetch('http://localhost:3000/books');
-      const books = await res.json();
-      const manageBookList = document.getElementById('manageBookList');
-      manageBookList.innerHTML = '';
-      books.forEach(book => {
-          const li = document.createElement('li');
-          li.textContent = `${book.title} by ${book.author} (Genre: ${book.genre})`;
-          manageBookList.appendChild(li);
-      });
-  }
+    // Function to Delete a Book
+    async function deleteBook(id) {
+        const token = localStorage.getItem(tokenKey);
+        try {
+            await axios.delete(`${apiUrl}/books/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            fetchBooks();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete book.');
+        }
+    }
+
+    // Function to Edit a Book
+    function editBook(id) {
+        const title = prompt("Enter new title:");
+        const author = prompt("Enter new author:");
+        const genre = prompt("Enter new genre:");
+        if (title || author || genre) {
+            updateBook(id, title, author, genre);
+        }
+    }
+
+    // Function to Update a Book
+    async function updateBook(id, title, author, genre) {
+        const token = localStorage.getItem(tokenKey);
+        try {
+            await axios.patch(`${apiUrl}/books/${id}`, { title, author, genre }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            fetchBooks();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to update book.');
+        }
+    }
+
+    // Load Books on Page Load
+    if (document.getElementById('books-list')) {
+        fetchBooks();
+    }
+
+    // Attach functions to global scope for inline event handlers
+    window.deleteBook = deleteBook;
+    window.editBook = editBook;
 });

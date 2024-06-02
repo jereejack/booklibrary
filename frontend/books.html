@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Books</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Books</h1>
+        <button onclick="logout()">Logout</button>
+        <div id="books-section">
+            <h2>Add New Book</h2>
+            <form id="add-book-form">
+                <input type="text" id="book-title" placeholder="Title" required>
+                <input type="text" id="book-author" placeholder="Author" required>
+                <input type="text" id="book-genre" placeholder="Genre" required>
+                <button type="submit">Add Book</button>
+            </form>
+            <h2>Books</h2>
+            <div id="books-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = 'http://localhost:3000';
+        const tokenKey = 'authToken';
+
+        function logout() {
+            localStorage.removeItem(tokenKey);
+            window.location.href = 'index.html';
+        }
+
+        async function fetchBooks() {
+            try {
+                const response = await axios.get(`${apiUrl}/books`);
+                const books = response.data;
+                const booksList = document.getElementById('books-list');
+                booksList.innerHTML = books.map(book => `
+                    <div class="book-item">
+                        <h3>${book.title}</h3>
+                        <p>Author: ${book.author}</p>
+                        <p>Genre: ${book.genre}</p>
+                        <button onclick="deleteBook(${book.id})">Delete</button>
+                        <button onclick="editBook(${book.id})">Edit</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+                alert('Failed to fetch books.');
+            }
+        }
+
+        async function addBook(title, author, genre) {
+            const token = localStorage.getItem(tokenKey);
+            try {
+                const response = await axios.post(`${apiUrl}/books`, { title, author, genre }, {
+                    headers: {
+                        'authorization': `${token}`
+                    }
+                });
+                fetchBooks();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to add book.');
+            }
+        }
+
+        document.getElementById('add-book-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('book-title').value;
+            const author = document.getElementById('book-author').value;
+            const genre = document.getElementById('book-genre').value;
+            await addBook(title, author, genre);
+        });
+
+        async function deleteBook(id) {
+            const token = localStorage.getItem(tokenKey);
+            try {
+                await axios.delete(`${apiUrl}/books/${id}`, {
+                    headers: {
+                        'authorization': `${token}`
+                    }
+                });
+                fetchBooks();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to delete book.');
+            }
+        }
+
+        function editBook(id) {
+            const title = prompt("Enter new title:");
+            const author = prompt("Enter new author:");
+            const genre = prompt("Enter new genre:");
+            if (title || author || genre) {
+                updateBook(id, title, author, genre);
+            }
+        }
+
+        async function updateBook(id, title, author, genre) {
+            const token = localStorage.getItem(tokenKey);
+            try {
+                await axios.patch(`${apiUrl}/books/${id}`, { title, author, genre }, {
+                    headers: {
+                        'authorization': `${token}`
+                    }
+                });
+                fetchBooks();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to update book.');
+            }
+        }
+
+        fetchBooks();
+    </script>
+</body>
+</html>
