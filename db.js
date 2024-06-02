@@ -5,16 +5,6 @@ dotenv.config();
 
 const connectionString = process.env.DATABASE_URL;
 
-// const client = new Client({
-//     connectionString:connectionString
-// });
-
-
-// client.connect();
-// client.query('SELECT * from public."users"', (err, res) => {
-//     console.log(err, res);
-//     client.end();
-// });
 
 
 const pool = new Pool({
